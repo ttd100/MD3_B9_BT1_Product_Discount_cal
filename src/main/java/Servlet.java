@@ -13,19 +13,27 @@ public class Servlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String name = request.getParameter("description");
-        float price = Float.parseFloat(request.getParameter("listPrice"));
-        float discount = Float.parseFloat(request.getParameter("discountPercent"));
-        float dAmount = (float) (price * discount*0.01);
-        float dcPrice = price - dAmount;
-        PrintWriter printWriter = response.getWriter();
-        printWriter.println("<html lang=\"vi\">");
-        printWriter.println("<meta charset = \"UTF-8\">");
-        printWriter.println("<h1> Product Description: " + name+ "</h1>");
-        printWriter.println("<h1> List Price: "  + price +"</h1>");
-        printWriter.println("<h1> Discount Percent:" + discount +"%</h1>");
-        printWriter.println("<h1> Discount Amount: " + dAmount +"</h1>");
-        printWriter.println("<h1> Discount Price: " + dcPrice +"</h1>");
-        printWriter.println("</html>");
+        try {
+            String name = request.getParameter("description");
+            float price = Float.parseFloat(request.getParameter("listPrice"));
+            float discount = Float.parseFloat(request.getParameter("discountPercent"));
+            float dAmount = (float) (price * discount*0.01);
+            float dcPrice = price - dAmount;
+
+            RequestDispatcher rd = request.getRequestDispatcher("showResult.jsp");
+            response.setContentType("text/html;charset=UTF-8");
+            request.setAttribute("name",name);
+            request.setAttribute("price",price);
+            request.setAttribute("discount",discount);
+            request.setAttribute("dAmount",dAmount);
+            request.setAttribute("dcPrice",dcPrice);
+            rd.forward(request,response);
+        }catch (Exception e){
+            String err = e.getMessage();
+            RequestDispatcher rd = request.getRequestDispatcher("showResult.jsp");
+            request.setAttribute("err",err);
+            rd.forward(request,response);
+        }
+
     }
 }
